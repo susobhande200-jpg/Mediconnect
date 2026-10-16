@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # MediConnect — Doctor Appointment & Clinic Management System
 
 **College project starter** built with Django 5.2, Bootstrap 5, SQLite/PostgreSQL, and a responsive healthcare UI.
@@ -100,3 +101,6 @@ Run `python manage.py send_appointment_reminders` to send reminders for confirme
 
 ## Razorpay test setup
 Set `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, and `RAZORPAY_WEBHOOK_SECRET` in environment variables. Configure a Razorpay webhook to `https://YOUR-DOMAIN/appointments/razorpay/webhook/` and subscribe to `payment.captured`. Use test keys first. Never mark a payment paid based on the browser callback alone; only a verified webhook changes the status. Test order creation and webhook reconciliation before using live credentials.
+=======
+hi
+>>>>>>> 34fcd300425bc2915e1fedc72ee913d9412819ab

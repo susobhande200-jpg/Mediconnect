@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block title %}Secure payment | MediConnect{% endblock %}
+{% block content %}<section class="section-pad"><div class="container"><div class="auth-card text-center"><div class="auth-icon"><i class="bi bi-shield-check"></i></div><h1>Secure checkout</h1><p class="auth-subtitle">Appointment reference {{ appointment.reference|truncatechars:20 }}</p><h2>₹{{ payment.amount }}</h2><p class="text-secondary">Razorpay order created. Status changes only after a verified server-side webhook.</p><button id="rzp-button" class="btn btn-primary rounded-pill w-100">Continue to Razorpay</button></div></div></section>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script><script>
+const options={key:"{{ key_id|escapejs }}",amount:"{{ order.amount }}",currency:"{{ order.currency|escapejs }}",name:"MediConnect",description:"Consultation fee",order_id:"{{ order.id|escapejs }}",handler:function(){alert("Payment submitted. The system waits for a verified server webhook.");},prefill:{name:"{{ user.get_full_name|escapejs }}",email:"{{ user.email|escapejs }}"},theme:{color:"#176bdf"}};
+document.getElementById("rzp-button").onclick=function(){if(window.Razorpay){new Razorpay(options).open();}else{alert("Payment checkout could not load. Please try again.");}};
+</script>{% endblock %}

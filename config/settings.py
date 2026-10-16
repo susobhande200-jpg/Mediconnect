@@ -6,18 +6,35 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
+
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-only-change-this-secret-key")
-DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() == "true"
-ALLOWED_HOSTS = [x.strip() for x in os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",") if x.strip()]
-if not DEBUG:
-    ALLOWED_HOSTS = [
-    host.strip()
-    for host in os.environ.get(
+
+# Production default: DEBUG is off.
+DEBUG = os.getenv("DJANGO_DEBUG", "False").strip().lower() == "true"
+
+# Read allowed hosts from Render environment variables.
+_hosts_value = os.getenv(
+    "DJANGO_ALLOWED_HOSTS",
+    os.getenv(
         "ALLOWED_HOSTS",
-        "mediconnect-0sxx.onrender.com,localhost,127.0.0.1"
-    ).split(",")
+        "mediconnect-0sxx.onrender.com,localhost,127.0.0.1",
+    ),
+)
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in _hosts_value.split(",")
     if host.strip()
 ]
+
+# Automatically include Render's service hostname.
+render_host = os.getenv("RENDER_EXTERNAL_HOSTNAME", "").strip()
+if render_host and render_host not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(render_host)
+
+for host in ("localhost", "127.0.0.1"):
+    if host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(host)
+
 
 INSTALLED_APPS = [
     "django.contrib.admin", "django.contrib.auth", "django.contrib.contenttypes",

@@ -117,3 +117,25 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend" if EMAIL_HOST and 
 RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID", "")
 RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET", "")
 RAZORPAY_WEBHOOK_SECRET = os.getenv("RAZORPAY_WEBHOOK_SECRET", "")
+# Log server errors to Render's application logs.
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "django.request": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+        "django": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": True,
+        },
+    },
+}

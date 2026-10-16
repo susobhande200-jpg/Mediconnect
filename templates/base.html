@@ -20,7 +20,7 @@
     <li class="nav-item"><a class="nav-link" href="{% url 'doctors' %}">Find Doctors</a></li>
     <li class="nav-item"><a class="nav-link" href="{% url 'home' %}#departments">Departments</a></li>
     {% if user.is_authenticated %}
-      <li class="nav-item"><a class="nav-link" href="{% if user.is_staff %}/admin/{% elif user.staff_profile %}{% url 'staff_dashboard' %}{% else %}{% url 'dashboard' %}{% endif %}">{% if user.is_staff %}Admin{% elif user.staff_profile %}Staff Dashboard{% else %}My Dashboard{% endif %}</a></li>
+      <li class="nav-item"><a class="nav-link" href="{% if user.is_staff %}{% url 'control_center' %}{% elif user.staff_profile %}{% url 'staff_dashboard' %}{% else %}{% url 'dashboard' %}{% endif %}">{% if user.is_staff %}Control Center{% elif user.staff_profile %}Staff Dashboard{% else %}My Dashboard{% endif %}</a></li>
       <li class="nav-item"><form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="btn btn-outline-secondary btn-sm rounded-pill px-3">Sign out</button></form></li>
     {% else %}
       <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Sign in</a></li>

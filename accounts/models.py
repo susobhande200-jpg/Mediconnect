@@ -14,6 +14,8 @@ class StaffProfile(models.Model):
     class Role(models.TextChoices):
         DOCTOR = "doctor", "Doctor"
         RECEPTIONIST = "receptionist", "Receptionist"
+        NURSE = "nurse", "Nurse / Medical Staff"
+        PHARMACIST = "pharmacist", "Pharmacist"
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="staff_profile")
     role = models.CharField(max_length=20, choices=Role.choices)
     phone = models.CharField(max_length=25, blank=True)

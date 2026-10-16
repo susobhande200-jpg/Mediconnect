@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # MediConnect — Doctor Appointment & Clinic Management System
 
 **College project starter** built with Django 5.2, Bootstrap 5, SQLite/PostgreSQL, and a responsive healthcare UI.
@@ -18,7 +17,10 @@
 - WhiteNoise static files, health endpoint, Render blueprint, environment configuration.
 
 ## Implemented in this expanded version
-- Separate doctor and receptionist dashboards with server-side role checks and admin approval.
+- Separate doctor, receptionist, nurse/medical staff, and pharmacist dashboards with server-side role checks and admin approval.
+- A dedicated Super Admin Control Center at `/accounts/control-center/` with operational summary cards, recent appointment activity, staff approval shortcuts, and links to detailed Django admin modules.
+- Branded Django admin header and improved search/filter controls for appointments, prescriptions, and payments.
+- Nurse and pharmacist roles are available for admin-created staff profiles; their dashboards intentionally expose limited functions.
 - Doctor appointment confirmation/rejection/completion actions.
 - Doctor-entered consultation notes and prescription with medication item fields.
 - Patient-visible authorized medical-record and prescription summaries.
@@ -35,8 +37,10 @@
 - Email verification is a signed link, not OTP; SMTP delivery must be configured.
 - Reminder command must be scheduled externally and does not itself run in the background.
 - PDF receipts/prescriptions, full lab records, analytics charts, waiting-room queue, review moderation and complete audit history remain future tasks.
+- Nurse dashboard is a limited appointment queue; pharmacist dashboard is read-only prescription listing. Dispensing workflow, medicine inventory, nurse vital-sign recording, and advanced staff task assignment are not implemented yet.
+- The Super Admin Control Center summarizes current database records and links to Django admin; it is not a substitute for a full audited production hospital management suite.
 - Email verification and real SMTP delivery (password-reset view is present; configure SMTP).
-- Actual payment gateway, refund processing, PDF receipts/prescriptions, full clinical records, laboratory module, reviews, support tickets, analytics charts, calendar UI, complete role-based doctor/receptionist dashboards, waitlists, background reminders.
+- Actual payment gateway/refund verification beyond the existing testable foundation, PDF receipts/prescriptions, full laboratory module, reviews, support tickets, advanced analytics charts, calendar UI, waitlists, and durable background job processing.
 - Full automated test coverage of the entire original specification.
 
 ## Windows installation (PowerShell)
@@ -77,7 +81,7 @@ Admin URL: http://127.0.0.1:8000/admin/
 - Create a Render Web Service from the repository, or use the included `render.yaml` blueprint.
 - Build command: `pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate --noinput`
 - Start command: `gunicorn config.wsgi:application`
-- Set `DJANGO_SECRET_KEY` to a long random secret and `DJANGO_DEBUG=False`.
+- Set `DJANGO_SECRET_KEY` to a long random secret and `DJANGO_DEBUG=False` (the setting name is `DJANGO_DEBUG`, not `DEBUG`).
 - Set `DJANGO_ALLOWED_HOSTS` to your Render hostname (the settings also allow `.onrender.com` in production).
 - Use a persistent PostgreSQL database and configure `DATABASE_URL`. Do not rely on local SQLite or uploaded media being persistent on an ephemeral web service.
 - Create the admin account using a secure one-off shell/command supported by your host, or locally and migrate appropriately. Never hardcode admin passwords in source code or build commands.
@@ -101,6 +105,3 @@ Run `python manage.py send_appointment_reminders` to send reminders for confirme
 
 ## Razorpay test setup
 Set `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, and `RAZORPAY_WEBHOOK_SECRET` in environment variables. Configure a Razorpay webhook to `https://YOUR-DOMAIN/appointments/razorpay/webhook/` and subscribe to `payment.captured`. Use test keys first. Never mark a payment paid based on the browser callback alone; only a verified webhook changes the status. Test order creation and webhook reconciliation before using live credentials.
-=======
-hi
->>>>>>> 34fcd300425bc2915e1fedc72ee913d9412819ab

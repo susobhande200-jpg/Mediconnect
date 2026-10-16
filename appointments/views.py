@@ -49,6 +49,8 @@ def staff_appointment_action(request, pk, action):
     profile = _staff_role(request.user)
     if not request.user.is_staff and not profile:
         raise PermissionDenied
+    if profile and profile.role not in (StaffProfile.Role.DOCTOR, StaffProfile.Role.RECEPTIONIST):
+        raise PermissionDenied
     appointment = get_object_or_404(Appointment, pk=pk)
     if profile and profile.role == StaffProfile.Role.DOCTOR and appointment.doctor.user_id != request.user.id:
         raise PermissionDenied
@@ -80,12 +82,24 @@ def staff_appointment_action(request, pk, action):
     return redirect("staff_dashboard")
 
 def _can_access_appointment(user, appointment):
-    if user.is_staff:
+    if user.is_superuser:
         return True
     if appointment.patient_id == user.id:
         return True
     profile = _staff_role(user)
-    return bool(profile and profile.role == StaffProfile.Role.DOCTOR and appointment.doctor.user_id == user.id)
+    if not profile:
+        return False
+    if profile.role == StaffProfile.Role.DOCTOR:
+        return appointment.doctor.user_id == user.id
+    # Receptionists coordinate appointment operations. Nurses/pharmacists are
+    # limited to appointments with an existing clinical/dispensing relationship.
+    if profile.role == StaffProfile.Role.RECEPTIONIST:
+        return True
+    if profile.role == StaffProfile.Role.NURSE:
+        return appointment.status in (Appointment.Status.CONFIRMED, Appointment.Status.COMPLETED)
+    if profile.role == StaffProfile.Role.PHARMACIST:
+        return appointment.prescriptions.exists()
+    return False
 
 @login_required
 def chat(request, pk):
@@ -99,7 +113,13 @@ def chat(request, pk):
             msg.appointment = appointment
             msg.sender = request.user
             msg.save()
-            other = appointment.doctor.user if request.user.id == appointment.patient_id else appointment.patient
+            sender_profile = _staff_role(request.user)
+            if request.user.id == appointment.patient_id:
+                other = appointment.doctor.user
+            elif sender_profile and sender_profile.role == StaffProfile.Role.RECEPTIONIST:
+                other = appointment.doctor.user
+            else:
+                other = appointment.patient
             if other.email:
                 send_mail("New MediConnect appointment message", f"You have a new message regarding appointment {appointment.reference}. Sign in to MediConnect to view it.", settings.DEFAULT_FROM_EMAIL, [other.email], fail_silently=True)
             return redirect("appointment_chat", pk=pk)

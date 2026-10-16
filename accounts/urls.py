@@ -5,4 +5,5 @@ urlpatterns = [
     path("verify/<str:token>/", views.verify_email, name="verify_email"),
     path("dashboard/", views.dashboard, name="dashboard"),
     path("staff-dashboard/", views.role_dashboard, name="staff_dashboard"),
+    path("control-center/", views.control_center, name="control_center"),
 ]

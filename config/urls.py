@@ -6,6 +6,10 @@ from django.contrib.auth import views as auth_views
 def health(request):
     return JsonResponse({"status": "ok", "service": "MediConnect"})
 
+admin.site.site_header = "MediConnect Control Center"
+admin.site.site_title = "MediConnect Administration"
+admin.site.index_title = "Clinic operations and system management"
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("core.urls")),
